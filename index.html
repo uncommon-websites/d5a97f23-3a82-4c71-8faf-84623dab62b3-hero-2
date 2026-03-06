@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delphi - Interactive Digital Clones</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Typography Utilities */
+        .font-playfair { font-family: 'Playfair Display', serif; }
+        .font-lora { font-family: 'Lora', serif; }
+        .font-mono { font-family: 'DM Mono', monospace; }
+        
+        .text-balance { text-wrap: balance; }
+        .text-pretty { text-wrap: pretty; }
+
+        /* Animation keyframes */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+                filter: blur(4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animation Classes */
+        .animate-fade-in-up {
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+        }
+
+        .animate-fade-in {
+            opacity: 0;
+            animation: fadeIn 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+        }
+
+        .animate-scale-in {
+            opacity: 0;
+            animation: scaleIn 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+        }
+
+        .animate-slide-down {
+            opacity: 0;
+            animation: slideDown 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+        }
+
+        /* Staggered Delays */
+        .delay-0 { animation-delay: 0ms; }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+        .delay-500 { animation-delay: 500ms; }
+        .delay-600 { animation-delay: 600ms; }
+        .delay-700 { animation-delay: 700ms; }
+        .delay-800 { animation-delay: 800ms; }
+
+        /* Custom Background Styles to match the abstract blur */
+        .bg-blur-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            transform: rotate(-45deg);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .animate-fade-in-up, .animate-fade-in, .animate-scale-in, .animate-slide-down {
+                animation: none;
+                opacity: 1;
+                transform: none;
+                filter: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#2563eb] h-screen w-full overflow-hidden relative selection:bg-[#60a5fa] selection:text-[#1e3a8a]">
+
+    <!-- Abstract Background Recreation -->
+    <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <!-- Base gradient -->
+        <div class="absolute inset-0 bg-gradient-to-br from-[#1d4ed8] via-[#2563eb] to-[#3b82f6]"></div>
+        
+        <!-- Light streaks/blobs to simulate the dappled light effect -->
+        <div class="bg-blur-shape bg-[#93c5fd] w-[150%] h-[40%] -top-[10%] -left-[20%] animate-fade-in delay-0"></div>
+        <div class="bg-blur-shape bg-[#60a5fa] w-[120%] h-[30%] top-[30%] -right-[20%] animate-fade-in delay-100"></div>
+        <div class="bg-blur-shape bg-[#93c5fd] w-[100%] h-[40%] bottom-[10%] left-[10%] animate-fade-in delay-200"></div>
+        <div class="bg-blur-shape bg-[#60a5fa] w-[80%] h-[50%] -bottom-[20%] -right-[10%] animate-fade-in delay-300"></div>
+        
+        <!-- Noise texture overlay for grain -->
+        <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');"></div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="relative z-20 w-full flex justify-center pt-6 px-4">
+        <div class="w-full max-w-[96%] bg-[#fffaf5] rounded-md shadow-sm h-14 px-6 flex items-center justify-between animate-slide-down delay-0">
+            
+            <!-- Left: Search -->
+            <div class="flex items-center gap-3 w-1/3">
+                <button class="text-gray-500 hover:text-gray-800 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    </svg>
+                </button>
+                <span class="font-lora text-sm text-gray-600">Search</span>
+            </div>
+
+            <!-- Center: Logo -->
+            <div class="w-1/3 flex justify-center">
+                <a href="#" class="font-playfair text-2xl tracking-wide text-gray-800">Delphi</a>
+            </div>
+
+            <!-- Right: Links -->
+            <div class="w-1/3 flex justify-end gap-6 md:gap-8">
+                <a href="#" class="font-lora text-sm text-gray-600 hover:text-gray-900 transition-colors hidden sm:block">About</a>
+                <a href="#" class="font-lora text-sm text-gray-600 hover:text-gray-900 transition-colors hidden sm:block">News</a>
+                <a href="#" class="font-lora text-sm text-gray-600 hover:text-gray-900 transition-colors hidden sm:block">Team</a>
+                <a href="#" class="font-lora text-sm text-gray-600 hover:text-gray-900 transition-colors hidden sm:block">Careers</a>
+                <!-- Mobile Menu Icon (Hidden on desktop) -->
+                <button class="sm:hidden text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Hero Content -->
+    <main class="relative z-10 flex flex-col items-center justify-center h-[calc(100vh-140px)] w-full px-4 text-center">
+        
+        <!-- Headline -->
+        <h1 class="text-balance font-playfair text-[#fffaf5] leading-[0.9] md:leading-[0.85] tracking-tight">
+            <!-- Line 1: Approachable (Italic) -->
+            <span class="block text-[11vw] sm:text-[10vw] md:text-[7rem] lg:text-[9rem] xl:text-[10rem] italic font-light animate-fade-in-up delay-200 tracking-tight leading-tight">
+                Interactive
+            </span>
+            <!-- Line 2: Intelligence (Regular) -->
+            <span class="block text-[11vw] sm:text-[10vw] md:text-[7rem] lg:text-[9rem] xl:text-[10rem] font-normal mt-2 md:mt-4 animate-fade-in-up delay-300 tracking-tight leading-tight">
+                Clones
+            </span>
+        </h1>
+
+        <!-- Subheadline -->
+        <p class="mt-8 md:mt-12 text-pretty font-lora text-lg md:text-2xl text-[#fffaf5] max-w-2xl opacity-90 animate-fade-in-up delay-500 font-light tracking-wide leading-relaxed">
+            Scale your expertise and provide 24/7 personalized mentorship with an interactive digital clone trained on your content.
+        </p>
+
+        <!-- CTA -->
+        <div class="mt-10 animate-fade-in-up delay-600">
+            <a href="#" class="inline-block px-8 py-4 bg-[#fffaf5] text-[#2563eb] font-mono uppercase tracking-widest text-sm font-semibold rounded-full hover:opacity-90 transition-colors duration-200 active:scale-[0.97]">
+                Create Your Clone
+            </a>
+        </div>
+
+    </main>
+
+    <!-- Bottom Left: Status -->
+    <div class="absolute bottom-6 left-6 md:bottom-8 md:left-8 z-20 animate-fade-in delay-700">
+        <button class="bg-[#fffaf5] rounded-full p-1 pr-4 flex items-center gap-3 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.97] group">
+            <span class="bg-blue-100 group-hover:bg-blue-200 transition-colors rounded-full px-3 py-1.5 text-[10px] md:text-xs font-mono uppercase tracking-widest text-blue-700 font-medium">
+                Live
+            </span>
+            <span class="text-[10px] md:text-xs font-mono text-gray-600 tracking-wider">
+                System Status
+            </span>
+        </button>
+    </div>
+
+</body>
+</html>
